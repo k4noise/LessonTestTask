@@ -91,6 +91,7 @@ class BotLogicTest {
         botLogic.processCommand(user, "1");
         Assertions.assertEquals("Напоминание установлено", bot.getLastMessage());
 
+        Thread.sleep(100);
         Assertions.assertEquals("Напоминание установлено", bot.getLastMessage());
         Thread.sleep(1024);
         Assertions.assertEquals("Сработало напоминание: 'Напоминание через секунду'", bot.getLastMessage());
