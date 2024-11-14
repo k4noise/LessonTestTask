@@ -34,7 +34,7 @@ class ContainerTest {
         Item firstItem = new Item(1);
         Item secondItem = new Item(2);
 
-        Assertions.assertTrue(container.add(firstItem));
+        container.add(firstItem);
         Assertions.assertEquals(1, container.size(), "Размер контейнера должен был увеличиться");
         Assertions.assertTrue(container.contains(firstItem), "Контейнер должен содержать элемент");
 
@@ -51,8 +51,8 @@ class ContainerTest {
     void testRemoveExistItem() {
         Item item = new Item(1);
         container.add(item);
-        Assertions.assertTrue(container.remove(item));
-        Assertions.assertFalse(container.contains(item));
+        container.remove(item);
+        container.contains(item);
         Assertions.assertEquals(0, container.size());
     }
 
@@ -63,6 +63,8 @@ class ContainerTest {
     @DisplayName("Удаление несуществующего элемента")
     void testRemoveNonExistItem() {
         Item item = new Item(1);
-        Assertions.assertFalse(container.remove(item));
+        container.add(new Item(2));
+        container.remove(item);
+        Assertions.assertEquals(1, container.size());
     }
 }

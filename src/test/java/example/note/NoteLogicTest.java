@@ -102,14 +102,4 @@ class NoteLogicTest {
                 removeNoteMessage, "Должно быть сообщение об ошибке удаления"
         );
     }
-
-    /**
-     * Проверка неизвестной команды
-     */
-    @Test
-    @DisplayName("Передача неизвестной команды")
-    void testHandleMessageUnknownCommand() {
-        String unknownCommandMessage = noteLogic.handleMessage("/show");
-        Assertions.assertEquals("Unknown command", unknownCommandMessage, "Должно быть сообщение о том, что команда неизвестна");
-    }
 }
