@@ -23,23 +23,60 @@ class BotLogicTest {
     /**
      * Пользователь
      */
-    private User user;
+    private final User user = new User(1L);
 
     /**
-     * Создать для каждого теста пользователя, бота и логику бота
+     * Создать для каждого теста бота и логику бота
      */
     @BeforeEach
     void setUp() {
         bot = new FakeBot();
         botLogic = new BotLogic(bot);
-        user = new User(1L);
     }
 
     /**
-     * Проверка команды /test
+     * Проверка команды /test, все ответы правильные
      */
     @Test
-    @DisplayName("Проверка режима тестирования")
+    @DisplayName("Проверка тестирования на правильных ответах")
+    void testCommandTestAllRightAnswers() {
+        botLogic.processCommand(user, "/test");
+
+        Assertions.assertEquals("Вычислите степень: 10^2", bot.getLastMessage());
+        botLogic.processCommand(user, "100"); // Правильный ответ
+        Assertions.assertEquals("Правильный ответ!", bot.getMessageFromEnd(1));
+
+        Assertions.assertEquals("Сколько будет 2 + 2 * 2", bot.getLastMessage());
+        botLogic.processCommand(user, "6"); // Правильный ответ
+        Assertions.assertEquals("Правильный ответ!", bot.getMessageFromEnd(1));
+
+        Assertions.assertEquals("Тест завершен", bot.getLastMessage());
+    }
+
+    /**
+     * Проверка команды /test, все ответы неправильные
+     */
+    @Test
+    @DisplayName("Проверка тестирования на неправильных ответах")
+    void testCommandTestAllWrongAnswers() {
+        botLogic.processCommand(user, "/test");
+
+        Assertions.assertEquals("Вычислите степень: 10^2", bot.getLastMessage());
+        botLogic.processCommand(user, "10"); // Неправильный ответ
+        Assertions.assertEquals("Вы ошиблись, верный ответ: 100", bot.getMessageFromEnd(1));
+
+        Assertions.assertEquals("Сколько будет 2 + 2 * 2", bot.getLastMessage());
+        botLogic.processCommand(user, "2"); // Неправильный ответ
+        Assertions.assertEquals("Вы ошиблись, верный ответ: 6", bot.getMessageFromEnd(1));
+
+        Assertions.assertEquals("Тест завершен", bot.getLastMessage());
+    }
+
+    /**
+     * Проверка команды /test, один правильный, один неправильный ответ
+     */
+    @Test
+    @DisplayName("Проверка тестирования на разных ответах")
     void testCommandTest() {
         botLogic.processCommand(user, "/test");
 
@@ -61,7 +98,9 @@ class BotLogicTest {
     @DisplayName("Проверка режима повтора вопросов с неправильным ответом")
     void testCommandRepeat() {
         botLogic.processCommand(user, "/test");
+        Assertions.assertEquals("Вычислите степень: 10^2", bot.getLastMessage());
         botLogic.processCommand(user, "100"); // Вычислите степень: 10^2, правильный ответ
+        Assertions.assertEquals("Сколько будет 2 + 2 * 2", bot.getLastMessage());
         botLogic.processCommand(user, "2"); // Сколько будет 2 + 2 * 2, неправильный ответ
 
         botLogic.processCommand(user, "/repeat");
