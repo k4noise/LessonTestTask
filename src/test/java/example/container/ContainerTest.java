@@ -44,16 +44,33 @@ class ContainerTest {
     }
 
     /**
-     * Проверка удаления существующего в контейнере элемента
+     * Проверка удаления элемента, добавленного в контейнер, по ссылке на тот же объект.
      */
     @Test
-    @DisplayName("Удаление существующего элемента")
-    void testRemoveExistItem() {
+    @DisplayName("Удаление элемента по ссылке на тот же объект")
+    void testRemoveItemBySameReference() {
         Item item = new Item(1);
         container.add(item);
         container.remove(item);
-        container.contains(item);
+        Assertions.assertFalse(container.contains(item));
         Assertions.assertEquals(0, container.size());
+    }
+
+    /**
+     * Проверка попытки удаления элемента с таким же значением, но другим объектом.
+     * <p>Метод <code>remove</code> в <code>ArrayList</code>, согласно JavaDoc, удаляет первое вхождение элемента,
+     * используя <code>Objects.equals(o, get(i))</code>. Поскольку <code>Item</code> не переопределяет
+     * <code>equals</code> и <code>hashCode</code>, сравнение объектов выполняется по ссылке. <br>
+     * Это означает, что два разных объекта с одинаковым значением не будут считаться равными.</p>
+     */
+    @Test
+    @DisplayName("Попытка удаления элемента с таким же значением, но другим объектом")
+    void testRemoveItemByDifferentObjectWithSameValue() {
+        Item item = new Item(1);
+        container.add(item);
+        container.remove(new Item(1));
+        Assertions.assertTrue(container.contains(item));
+        Assertions.assertEquals(1, container.size());
     }
 
     /**
